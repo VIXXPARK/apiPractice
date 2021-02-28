@@ -4,7 +4,7 @@ const User = require('./models/user');
 var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwt = require('jsonwebtoken');
-
+var GoogleStrategy = require('passport-google-oauth20')
 var config = require('./config');
 
 exports.local = passport.use(new LocalStrategy({
@@ -56,3 +56,30 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,(jwt_payload,done)=>{
 }))
 
 exports.verifyUser = passport.authenticate('jwt',{session:false});
+
+
+exports.GoogleStrategy = passport.use(new GoogleStrategy({
+    clientID: config.GOOGLE_CLIENT_ID,
+    clientSecret: config.GOOGLE_CLIENT_SECRET,
+    callbackURL: 'http://localhost:3000/api/user/google/callback',
+    passReqToCallback:true
+    },
+    function(accessToken,refreshToken,profile,cb){
+        const{
+            _json:{id,avatar_url,login:name,email}
+        }=profile
+        User.findOne({email:email})
+        .then((user)=>{
+            if(!user){
+                user.save()
+                return cb(null,user)
+            }
+            else{
+                var Error = new Error("already exists");
+                cb(Error,null)
+            }
+        })
+    }
+))
+
+
