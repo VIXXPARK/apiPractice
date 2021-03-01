@@ -11,26 +11,16 @@ exports.local = passport.use(new LocalStrategy({
     usernameField:'email',
     passwordField:'password',
     passReqToCallback:true
-
-},
-function(req,username,password,done){
-    User.findOne({email:username,function (err,user) {
-        if(err){
-            return done(err);
-        }
-        if(!user){
-            return done(null,false,{message:"incorrect user"});
-        }
-        if(!user.comparePassword(password)){
-            return done(null,false,{message:'Incorrect password'});
-        }
-        return done(null,user);
-        
-    }})
-}
-));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+    },
+    function(req,username,password,done){
+        User.isValidUserPassword(username,password,done);
+}));
+passport.serializeUser(function (user,done){
+    done(null,user)
+});
+passport.deserializeUser(function(obj,done){
+    done(null,obj);
+});
 
 exports.getToken = function(user){
     return jwt.sign(user,config.secretKey,{expiresIn:3600});
@@ -42,7 +32,7 @@ opts.secretOrKey = config.secretKey;
 
 exports.jwtPassport = passport.use(new JwtStrategy(opts,(jwt_payload,done)=>{
     console.log('JWT payload: ',jwt_payload);
-    User.findOne({_id:jwt_payload._id},(err,user)=>{
+    User.findOne({email:jwt_payload.email},(err,user)=>{
         if(err){
             return done(err,false);
         }
@@ -64,22 +54,12 @@ exports.GoogleStrategy = passport.use(new GoogleStrategy({
     callbackURL: 'http://localhost:3000/api/user/google/callback',
     passReqToCallback:true
     },
-    function(accessToken,refreshToken,profile,cb){
-        const{
-            _json:{id,avatar_url,login:name,email}
-        }=profile
-        User.findOne({email:email})
-        .then((user)=>{
-            if(!user){
-                user.save()
-                return cb(null,user)
-            }
-            else{
-                var Error = new Error("already exists");
-                cb(Error,null)
-            }
-        })
-    }
+    function(request, accessToken, refreshToken, profile, done){
+        console.log('profile: ', profile);
+        var user = profile;
+    
+        done(null, user);
+      }
 ))
 
 

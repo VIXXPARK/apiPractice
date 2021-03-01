@@ -15,5 +15,8 @@ const upload = multer({
 router.get('/list',controller.getUser);
 router.post('/signup',upload.fields([{name:'profile',maxCount:1}]),controller.signup);
 router.get('/google',passport.authenticate('google',{scope:['profile','email']}));
-router.get('/google/callback',passport.authenticate('google',{failureRedirect:'/list'}));
+router.get('/google/callback',passport.authenticate('google',{failureRedirect:'/login'}),function(req,res){
+    res.redirect('/')
+});
+router.post('/login',passport.authenticate('local'),function(req,res){res.redirect('/')})
 module.exports = router

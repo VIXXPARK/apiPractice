@@ -1,5 +1,6 @@
 const User = require('../../../models/user');
-var authenticate = require('../../../passport');
+const passport = require('passport');
+const { authenticate } = require('passport');
 
 exports.getUser=(req,res,next)=>{
     User.find({})
