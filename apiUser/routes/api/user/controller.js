@@ -1,6 +1,6 @@
 const User = require('../../../models/user');
 const passport = require('passport');
-const { authenticate } = require('passport');
+const authenticate = require('../../../passport');
 
 exports.getUser=(req,res,next)=>{
     User.find({})
@@ -40,4 +40,17 @@ exports.signup = (req,res,next)=>{
         };
     }
     )
+}
+exports.login=(req,res)=>{
+    var token = authenticate.getToken({email:req.user.email})
+    res.json({
+        data:req.user,
+        token:token
+    })
+}
+
+exports.logout=(req,res,next)=>{
+    req.logout();
+    console.log(req.session)
+    res.redirect('/');
 }

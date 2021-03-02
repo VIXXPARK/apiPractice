@@ -5,7 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser=require('body-parser');
 var passport = require('passport');
-var passportConfig = require('./passport');
+var flash = require('express-session');
+var session = require('express-session');
 
 var indexRouter = require('./routes/index');
 
@@ -31,9 +32,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+app.use(session({
+  secret:config.sessionKey,
+  resave:false,
+  saveUninitialized:true
+}))
 app.use(passport.initialize());
-// app.use(passport.session());
-
+app.use(passport.session());
+app.use(flash());
 app.use('/', indexRouter);
 app.use('/api',require('./routes/api'));
 

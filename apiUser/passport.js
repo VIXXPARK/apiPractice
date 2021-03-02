@@ -6,6 +6,10 @@ var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwt = require('jsonwebtoken');
 var GoogleStrategy = require('passport-google-oauth20')
 var config = require('./config');
+var session = require('express-session');
+var flash = require('connect-flash');
+
+
 
 exports.local = passport.use(new LocalStrategy({
     usernameField:'email',
