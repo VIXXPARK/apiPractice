@@ -8,8 +8,8 @@ var GoogleStrategy = require('passport-google-oauth20')
 var config = require('./config');
 var session = require('express-session');
 var flash = require('connect-flash');
-
-
+var FacebookStrategy = require('passport-facebook');
+var NaverStrategy = require('passport-naver');
 
 exports.local = passport.use(new LocalStrategy({
     usernameField:'email',
@@ -66,4 +66,45 @@ exports.GoogleStrategy = passport.use(new GoogleStrategy({
       }
 ))
 
+exports.FacebookStrategy = passport.use(new FacebookStrategy({
+    clientID: config.FACEBOOK_CLIENT_ID,
+    clientSecret: config.FACEBOOK_CLIENT_SECRET,
+    callbackURL:'http://localhost:3000/api/user/facebook/callback',
+    passReqToCallback:true  
+    },
+    function(request,accessToken,refreshToken,profile,done){
+        User.findOne({_id:profile.id},(err,user)=>{
+            if(user){
+                return done(err,user);
+            }
+            const newUser = new User({
+                email:profile.email
+            })
+            newUser.save((user)=>{
+                return done(null,user)
+            })
+        }) 
+    }
+))
 
+exports.NaverStrategy = passport.use(new NaverStrategy({
+    clientID:config.NAVER_CLIENT_ID,
+    clientSecret:config.NAVER_CLIENT_SECRET,
+    callbackURL:'http://localhost:3000/api/user/naver/callback',
+    passReqToCallback:true
+    },
+    function(request,accessToken,refreshToken,profile,done){
+        User.findOne({_id:profile.id},(err,user)=>{
+            if(user){
+                return done(err,user)
+            }
+            console.log(profile)
+            const newUser = new User({
+                email:profile.emails[0].value,
+            })
+            newUser.save((user)=>{
+                return done(null,user)
+            })
+        })
+    }
+))
