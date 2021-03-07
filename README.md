@@ -53,3 +53,25 @@ exports.getmap = (req,res)=>{
 }
 ```
 
+네이버 search data 가져오기
+
+```javascript
+exports.trend = (req,res,next)=>{
+    var url = "https://naveropenapi.apigw.ntruss.com/datalab/v1/search"
+    var request = require('request')
+    var options= {
+        url:url,
+        method:'POST',
+        body:JSON.stringify(req.body),
+        headers:{'X-NCP-APIGW-API-KEY-ID':config.NAVER_CLOUD_CLIENT_ID,'X-NCP-APIGW-API-KEY':config.NAVER_CLOUD_CLIENT_SECRET}
+    }
+    request.post(options,(status,response)=>{
+        console.log(response)
+        res.json({
+            data:response.body
+        })
+    })
+```
+JSON.stringify()라는 메소드가 있다는 것을 알았다.
+
+<img src="/image/api_search_trend.png">
