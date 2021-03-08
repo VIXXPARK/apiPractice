@@ -27,6 +27,11 @@ router.get('/naver',passport.authenticate('naver'));
 router.get('/naver/callback',passport.authenticate('naver',{successRedirect:'/',failureRedirect:'/login',failureFlash:true}),function(req,res){
     res.redirect('/')
 })
+router.get('/kakao',passport.authenticate('kakao'));
+router.get('/kakao/callback',passport.authenticate('kakao',{successRedirect:'/',failureRedirect:'/login',failureRedirect:true}),(req,res)=>{
+    res.redirect('/')
+})
+
 router.post('/login',passport.authenticate('local'),controller.login)
 router.get('/logout',controller.logout)
 module.exports = router

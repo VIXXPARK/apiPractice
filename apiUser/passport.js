@@ -10,6 +10,7 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var FacebookStrategy = require('passport-facebook');
 var NaverStrategy = require('passport-naver');
+var KakaoStrategy = require('passport-kakao').Strategy;
 
 exports.local = passport.use(new LocalStrategy({
     usernameField:'email',
@@ -94,17 +95,39 @@ exports.NaverStrategy = passport.use(new NaverStrategy({
     passReqToCallback:true
     },
     function(request,accessToken,refreshToken,profile,done){
-        User.findOne({_id:profile.id},(err,user)=>{
+        User.findOne({email:profile.emails[0].value},(err,user)=>{
             if(user){
                 return done(err,user)
             }
-            console.log(profile)
             const newUser = new User({
                 email:profile.emails[0].value,
             })
             newUser.save((user)=>{
+                console.log(user)
                 return done(null,user)
             })
+        })
+    }
+))
+
+exports.KakaoStrategy = passport.use(new KakaoStrategy({
+    clientID:config.KAKAO_CLIENT_ID,
+    callbackURL:'http://localhost:3000/api/user/kakao/callback'
+    },
+    function(accessToken,refreshToken,profile,done){
+        User.findOne({_id:profile.id},(err,user)=>{
+            if(user){
+                return done(err,user)
+            }
+            else{
+                user = new User({
+                    provider:profile._json
+                })
+            user.save((user)=>{
+                console.log(user)
+                return done(null,user)
+            })
+            }
         })
     }
 ))
