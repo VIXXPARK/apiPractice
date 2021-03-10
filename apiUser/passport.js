@@ -74,17 +74,8 @@ exports.FacebookStrategy = passport.use(new FacebookStrategy({
     passReqToCallback:true  
     },
     function(request,accessToken,refreshToken,profile,done){
-        User.findOne({_id:profile.id},(err,user)=>{
-            if(user){
-                return done(err,user);
-            }
-            const newUser = new User({
-                email:profile.email
-            })
-            newUser.save((user)=>{
-                return done(null,user)
-            })
-        }) 
+        var user = profile
+        done(null,user)
     }
 ))
 
@@ -95,18 +86,8 @@ exports.NaverStrategy = passport.use(new NaverStrategy({
     passReqToCallback:true
     },
     function(request,accessToken,refreshToken,profile,done){
-        User.findOne({email:profile.emails[0].value},(err,user)=>{
-            if(user){
-                return done(err,user)
-            }
-            const newUser = new User({
-                email:profile.emails[0].value,
-            })
-            newUser.save((user)=>{
-                console.log(user)
-                return done(null,user)
-            })
-        })
+        var user = profile
+        done(null,user)
     }
 ))
 
@@ -115,19 +96,8 @@ exports.KakaoStrategy = passport.use(new KakaoStrategy({
     callbackURL:'http://localhost:3000/api/user/kakao/callback'
     },
     function(accessToken,refreshToken,profile,done){
-        User.findOne({_id:profile.id},(err,user)=>{
-            if(user){
-                return done(err,user)
-            }
-            else{
-                user = new User({
-                    provider:profile._json
-                })
-            user.save((user)=>{
-                console.log(user)
-                return done(null,user)
-            })
-            }
-        })
+        console.log(accessToken)
+        var user = profile
+        done(null,user)
     }
 ))

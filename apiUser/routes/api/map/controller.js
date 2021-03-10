@@ -1,7 +1,6 @@
 const config = require('../../../config')
 
 exports.getmap = (req,res)=>{
-    console.log(req.query.query)
     var api_url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query="+encodeURI(req.query.query)
     var request = require('request')
     var options={
