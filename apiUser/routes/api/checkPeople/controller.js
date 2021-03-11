@@ -1,6 +1,7 @@
 const config = require('../../../config')
 var request = require('request')
-
+const { response } = require('express')
+const convert = require('xml-js')
 exports.getPeople = (req,res,next)=>{
     var api_url="https://api.bigdatahub.co.kr/v1/datahub/datasets/search.json"
     // var queryParams = '?' + encodeURIComponent('TDCAccessKey') + '='+encodeURIComponent(config.TDCAccessKey); 
@@ -77,7 +78,6 @@ exports.getCovid = (req,res,next)=>{
         queryParams += '&' + encodeURIComponent('endCreateDt') + '=' + encodeURIComponent(req.query.endCreateDt); /* */
     
     api_url+=queryParams
-    console.log(api_url)
     request({
         url: api_url,
         method: 'GET'
@@ -85,9 +85,28 @@ exports.getCovid = (req,res,next)=>{
         //console.log('Status', response.statusCode);
         //console.log('Headers', JSON.stringify(response.headers));
         //console.log('Reponse received', body);
+        var xmlToJson = convert.xml2json(body,{compact:true,spaces:4})
+        var x = JSON.parse(xmlToJson)
+        // console.log(JSON.stringify(x.response.body.items)) // Items 있는 부분만 전달. 즉 우리가 원하는 데이터만 전달!
         res.json({
-            data:response
+            data:JSON.stringify(x.response.body.items)
         })
     });
 }
-
+exports.getVaccine = (req,res)=>{
+    var api_url = 'https://api.odcloud.kr/api/15077586/v1/centers'
+    var queryParams= '?' + encodeURIComponent('page') + '=' + encodeURIComponent(req.query.page); /* */
+    queryParams+= '&' + encodeURIComponent('perPage') + '=' + encodeURIComponent(req.query.perPage); /* */
+    // queryParams += '&' + encodeURIComponent('ServiceKey') + '='+(config.PublicKey); /* Service Key*/
+    var options={
+        url:api_url+queryParams,
+        method:'GET',
+        headers:{'Authorization':config.PublicKey}
+    }
+    request(options,(error,response,body)=>{
+        console.log(options)
+        res.json({
+            data:response
+        })
+    })
+}
