@@ -1,11 +1,11 @@
 const config = require('../../../config')
-var request = require('request')
+let request = require('request')
 const { response } = require('express')
 const convert = require('xml-js')
 exports.getPeople = (req,res,next)=>{
-    var api_url="https://api.bigdatahub.co.kr/v1/datahub/datasets/search.json"
+    let api_url="https://api.bigdatahub.co.kr/v1/datahub/datasets/search.json"
     // var queryParams = '?' + encodeURIComponent('TDCAccessKey') + '='+encodeURIComponent(config.TDCAccessKey); 
-    var queryParams='?'+encodeURIComponent('pid')+'='+encodeURIComponent(req.query.pid)
+    let queryParams='?'+encodeURIComponent('pid')+'='+encodeURIComponent(req.query.pid)
     // queryParams+='&'+encodeURIComponent('TDCAccessKey')+'='+encodeURIComponent(config.TDCAccessKey)
     if (req.query.page)
         queryParams+='&$'+encodeURIComponent('page')+'='+encodeURI(req.query.page)
@@ -18,7 +18,7 @@ exports.getPeople = (req,res,next)=>{
     if (req.query.order)
         queryParams+='&$'+encodeURIComponent('order')+'='+encodeURI(req.query.order)
     api_url+=queryParams
-    var options={
+    const options={
         url:api_url,
         method:'GET',
         headers:{'TDCAccessKey':config.TDCAccessKey}
@@ -34,8 +34,8 @@ exports.getPeople = (req,res,next)=>{
 }
 
 exports.getAlarm = (req,res,next)=>{
-    var api_url = "http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst"
-    var queryParams = '?' + encodeURIComponent('ServiceKey') + '='+(config.PublicKey); /* Service Key*/
+    let api_url = "http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst"
+    let queryParams = '?' + encodeURIComponent('ServiceKey') + '='+(config.PublicKey); /* Service Key*/
     if(req.query.pageNo)
         queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent(req.query.pageNo); /* */
     if(req.query.numOfRows)
@@ -66,8 +66,8 @@ exports.getAlarm = (req,res,next)=>{
 }
 
 exports.getCovid = (req,res,next)=>{
-    var api_url = 'http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson';
-    var queryParams = '?' + encodeURIComponent('ServiceKey') + '='+(config.PublicKey); /* Service Key*/
+    let api_url = 'http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson';
+    let queryParams = '?' + encodeURIComponent('ServiceKey') + '='+(config.PublicKey); /* Service Key*/
     if(req.query.pageNo)
         queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent(req.query.pageNo); /* */
     if(req.query.numOfRows)
@@ -94,11 +94,11 @@ exports.getCovid = (req,res,next)=>{
     });
 }
 exports.getVaccine = (req,res)=>{
-    var api_url = 'https://api.odcloud.kr/api/15077586/v1/centers'
-    var queryParams= '?' + encodeURIComponent('page') + '=' + encodeURIComponent(req.query.page); /* */
+    let api_url = 'https://api.odcloud.kr/api/15077586/v1/centers'
+    let queryParams= '?' + encodeURIComponent('page') + '=' + encodeURIComponent(req.query.page); /* */
     queryParams+= '&' + encodeURIComponent('perPage') + '=' + encodeURIComponent(req.query.perPage); /* */
     // queryParams += '&' + encodeURIComponent('ServiceKey') + '='+(config.PublicKey); /* Service Key*/
-    var options={
+    const options={
         url:api_url+queryParams,
         method:'GET',
         headers:{'Authorization':config.PublicKey}

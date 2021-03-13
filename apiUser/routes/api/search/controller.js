@@ -1,9 +1,9 @@
 const config = require('../../../config')
 
 exports.trend = (req,res,next)=>{
-    var url = "https://naveropenapi.apigw.ntruss.com/datalab/v1/search"
-    var request = require('request')
-    var options= {
+    let url = "https://naveropenapi.apigw.ntruss.com/datalab/v1/search"
+    const request = require('request')
+    const options= {
         url:url,
         method:'POST',
         body:JSON.stringify(req.body),
