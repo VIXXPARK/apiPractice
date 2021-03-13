@@ -1,13 +1,13 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var passport = require('passport');
-var flash = require('express-session');
-var session = require('express-session');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
+let passport = require('passport');
+let flash = require('express-session');
+let session = require('express-session');
 
-var indexRouter = require('./routes/index');
+let indexRouter = require('./routes/index');
 
 
 const mongoose = require('mongoose');
@@ -17,7 +17,7 @@ const url = config.mongoUrl;
 const connect = mongoose.connect(url,{useNewUrlParser:true,useUnifiedTopology:true});
 
 
-var app = express();
+let app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

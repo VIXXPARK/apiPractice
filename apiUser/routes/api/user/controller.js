@@ -42,7 +42,7 @@ exports.signup = (req,res,next)=>{
     )
 }
 exports.login=(req,res)=>{
-    var token = authenticate.getToken({email:req.user.email})
+    let token = authenticate.getToken({email:req.user.email})
     res.json({
         data:req.user,
         token:token
