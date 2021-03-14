@@ -11,14 +11,28 @@ var flash = require('connect-flash');
 var FacebookStrategy = require('passport-facebook');
 var NaverStrategy = require('passport-naver');
 var KakaoStrategy = require('passport-kakao').Strategy;
-
+let bcrypt = require('bcrypt')
 exports.local = passport.use(new LocalStrategy({
     usernameField:'email',
     passwordField:'password',
     passReqToCallback:true
     },
     function(req,username,password,done){
-        User.isValidUserPassword(username,password,done);
+        console.log(username)
+        User.findOne({email:username},(error,user)=>{
+            console.log(user)
+            if(error) return done(error)
+            if(!user) return done(null,false,{message:"invalid id"})
+            let passwordIsValid = bcrypt.compareSync(
+                password,
+                user.password
+            )
+            if(!passwordIsValid){
+                return done(error,user)
+            }
+            else
+                return done(null,user)
+        })
 }));
 passport.serializeUser(function (user,done){
     done(null,user)

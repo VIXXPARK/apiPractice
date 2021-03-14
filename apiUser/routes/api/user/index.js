@@ -28,7 +28,7 @@ router.get('/naver/callback',passport.authenticate('naver',{successRedirect:'/',
     res.redirect('/api/user/login')
 })
 router.get('/kakao',passport.authenticate('kakao'));
-router.get('/kakao/callback',passport.authenticate('kakao',{successRedirect:'/',failureRedirect:'/login',failureRedirect:true}),(req,res)=>{
+router.get('/kakao/callback',passport.authenticate('kakao',{successRedirect:'/',failureRedirect:'/login',failureFlash:true}),(req,res)=>{
     res.redirect('/api/user/login')
 })
 

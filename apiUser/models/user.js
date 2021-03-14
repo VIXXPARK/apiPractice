@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const bycrypt = require('bcrypt')
 var passportLocalMongoose = require('passport-local-mongoose');
 var User = new Schema({
     email:{
@@ -17,24 +18,17 @@ var User = new Schema({
     admin:{
         type:Boolean,
         default:false
+    },
+    password:{
+        type:String,
+        required:true
     }
 
 },{
     timestamps:true
 });
 
-User.plugin(passportLocalMongoose,{usernameField:'email'});
 
 
-User.statics.isValidUserPassword = function(username, password, done) {
-    var criteria = (username.indexOf('@') === -1) ? {username: username} : {email: username};
-    this.findOne(criteria, function(err, user){
-        if(err) return done(err);
-        if(!user){
-            return done(null,false,{message:"incorrect user"});
-        }
-        return done(null,user);
-    });
-};
 
 module.exports = mongoose.model('User',User);
